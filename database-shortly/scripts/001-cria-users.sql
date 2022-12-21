@@ -3,5 +3,4 @@ CREATE TABLE users(
     name TEXT NOT NULL,
     email TEXT NOT NULL,
     password TEXT NOT NULL
-    "createAt" TIME NOT NULL
 );

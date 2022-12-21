@@ -7,11 +7,12 @@ export async function postUrlShorten(req, res) {
 
     try {
         const shortUrl = nanoid(10);
+        const createdAt = new Date();
 
         await pgConnection.query(`INSERT INTO 
-        urls (url, "shortUrl", "userId") 
-        VALUES ($1, $2, $3);`,
-            [url, shortUrl, userId]
+        urls (url, "shortUrl", "userId", "createdAt") 
+        VALUES ($1, $2, $3, $4);`,
+            [url, shortUrl, userId, createdAt]
         );
 
         res.status(201).send({ shortUrl: shortUrl });
@@ -21,18 +22,6 @@ export async function postUrlShorten(req, res) {
         res.sendStatus(500);
     }
 }
-
-// export async function getShortenUrls(req, res) {
-//     const shortUrl = res.locals.shortUrl;
-
-//     try {
-//         res.status(200).send(shortUrl);
-
-//     } catch (error) {
-//         console.error(error);
-//         res.sendStatus(500);
-//     }
-// }
 
 export async function getShortenUrls(req, res) {
     //teste
@@ -53,9 +42,10 @@ export async function getShortenUrls(req, res) {
 export async function redirectGetUrl(req, res) {
     const url = res.locals.url;
     const urlId = res.locals.id;
+    const userId = res.locals.userId;
     try {
-
-        await pgConnection.query(`INSERT INTO visits ("urlId", visit) VALUES ($1, $2);`, [urlId, 1]);
+       
+        await pgConnection.query(`INSERT INTO visits ("urlId", visit, "userId") VALUES ($1, $2, $3);`, [urlId, 1, userId]);
 
         res.redirect(url);
 

@@ -22,30 +22,6 @@ export async function urlValidation(req, res, next) {
     }
 }
 
-// export async function shortenValidation(req, res, next) {
-//     const { id } = req.params;
-
-//     if (isNaN(Number(id))) {
-//         return res.status(404).send("id inválido");
-//     }
-
-//     try {
-
-//         const shortUrl = await pgConnection.query('SELECT id, "shortUrl", url FROM urls WHERE id = $1;', [id]);
-
-//         if (shortUrl.rowCount === 0) {
-//             return res.sendStatus(404);
-//         }
-
-//         res.locals.shortUrl = shortUrl.rows[0];
-//         next();
-
-//     } catch (error) {
-//         console.error(error);
-//         res.sendStatus(500);
-//     }
-// };
-
 export async function shortenValidation(req, res, next) {
     const { id } = req.params;
 
@@ -84,6 +60,7 @@ export async function redirectUrlValidation(req, res, next) {
 
         res.locals.url = shortUrlExist.rows[0].url;
         res.locals.id = shortUrlExist.rows[0].id;
+        res.locals.userId = shortUrlExist.rows[0].userId;
         next();
 
     } catch (error) {
@@ -93,15 +70,15 @@ export async function redirectUrlValidation(req, res, next) {
 }
 
 export async function urlBelongsToUserValidation(req, res, next) {
-    const { userId } = res.locals.shortUrl; //id do usuário middlweares shortenValidation
-    
+    const userId = res.locals.userId; //id do usuário middlweares tokenValidation
+    const { id } = res.locals.shortUrl;
+
     try {
 
-        const userUrl = await pgConnection.query(`SELECT url FROM urls WHERE "userId" = $1;`, [userId]);
+        const userUrl = await pgConnection.query(`SELECT * FROM urls WHERE "userId" = $1 AND id = $2;`, [userId, id]);
 
-        //se a url não pertecer ao usuário
         if (userUrl.rowCount === 0) {
-            console.log("url não pertenece ao usuário");
+            console.log("url não pertence ao usuário");
             return res.sendStatus(401);
         }
 
