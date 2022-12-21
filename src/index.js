@@ -7,6 +7,7 @@ import signup from "./routes/01.signup.routes.js";
 import signin from "./routes/02.signin.routes.js";
 import urls from "./routes/03.urls.routes.js";
 import users from "./routes/04.users.routes.js";
+import ranking from "./routes/05.ranking.routes.js";
 
 const server = express();
 server.use(cors());
@@ -16,6 +17,7 @@ server.use(signup);
 server.use(signin);
 server.use(urls);
 server.use(users);
+server.use(ranking);
 
 const port = process.env.PORT
 
