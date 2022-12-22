@@ -1,4 +1,4 @@
-import pgConnection from "../database/database.js";
+import { selectUserByEmail } from "../repositories/01.signup.repositories.js";
 import { signUpSchema } from "../schemas/01.signup.schemas.js";
 
 export async function signupValidation(req, res, next) {
@@ -14,7 +14,7 @@ export async function signupValidation(req, res, next) {
 
     try {
 
-        const isEmailAllreadyInUse = await pgConnection.query("SELECT email FROM users WHERE email = $1;", [user.email]);
+        const isEmailAllreadyInUse = await selectUserByEmail(user.email);
 
         if (isEmailAllreadyInUse.rowCount !== 0) {
             return res.sendStatus(409);

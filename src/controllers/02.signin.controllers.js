@@ -1,11 +1,11 @@
-import pgConnection from "../database/database.js";
+import { insertSessions } from "../repositories/02.signin.repositories.js";
 
 export async function postSignIn(req, res) {
     const token = res.locals.token;
     const id = res.locals.id;
     try {
 
-        await pgConnection.query('INSERT INTO sessions (token, "userId") VALUES ($1, $2);', [token, id]);
+        await insertSessions(token, id);
 
         res.status(200).send({ token });
 

@@ -1,4 +1,5 @@
 import pgConnection from "../database/database.js";
+import { selectByShortUrl, selectUrlById, selectUrlsByUserIdAndUrlId } from "../repositories/03.urls.repositories.js";
 import { urlSchema } from "../schemas/03.urls.schemas.js";
 
 export async function urlValidation(req, res, next) {
@@ -55,7 +56,7 @@ export async function shortenValidation(req, res, next) {
 
     try {
 
-        const shortUrl = await pgConnection.query('SELECT * FROM urls WHERE id = $1;', [id]);
+        const shortUrl = await selectUrlById(id);
 
         if (shortUrl.rowCount === 0) {
             console.log("shortUrl não existe");
@@ -76,7 +77,7 @@ export async function redirectUrlValidation(req, res, next) {
 
     try {
 
-        const shortUrlExist = await pgConnection.query(`SELECT * FROM urls WHERE "shortUrl" = $1;`, [shortUrl]);
+        const shortUrlExist = await selectByShortUrl(shortUrl);
 
         if (shortUrlExist.rowCount === 0) {
             return res.sendStatus(404);
@@ -98,7 +99,7 @@ export async function urlBelongsToUserValidation(req, res, next) {
     console.log(userId, "userId")
     try {
 
-        const userUrl = await pgConnection.query(`SELECT * FROM urls WHERE "userId" = $1 AND id = $2;`, [userId, id]);
+        const userUrl = await selectUrlsByUserIdAndUrlId(userId, id);
 
         //se a url não pertecer ao usuário
         if (userUrl.rowCount === 0) {

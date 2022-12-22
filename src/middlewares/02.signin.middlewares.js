@@ -1,7 +1,7 @@
 import { signInSchema } from "../schemas/02.signin.schemas.js";
 import bcrypt from "bcrypt";
-import pgConnection from "../database/database.js";
 import { v4 as uuidv4 } from "uuid";
+import { selectByEmail } from "../repositories/02.signin.repositories.js";
 
 export async function signinValidation(req, res, next) {
     const { email, password } = req.body;
@@ -16,24 +16,18 @@ export async function signinValidation(req, res, next) {
     }
 
     try {
-        const userAccount = await pgConnection.query("SELECT * FROM users WHERE email = $1;", [email]);
+        const userAccount = await selectByEmail(email);
 
         if (userAccount.rowCount === 0) {
             return res.sendStatus(401);
         }
-        
-         const passwordValid = bcrypt.compareSync(password, userAccount.rows[0].password);
 
-         if (!passwordValid) {
-             return res.sendStatus(401);
-         }
+        const passwordValid = bcrypt.compareSync(password, userAccount.rows[0].password);
 
-         //não é uma rpta autenticada
-        // const inASession = await pgConnection.query("SELECT token FROM sessions WHERE token = $1 AND active = true;", [token]);
+        if (!passwordValid) {
+            return res.sendStatus(401);
+        }
 
-        // if (inASession.rowCount !== 0) {
-        //     return res.sendStatus(401)
-        // }
 
         res.locals.token = token;
         res.locals.id = userAccount.rows[0].id;

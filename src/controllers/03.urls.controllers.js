@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import pgConnection from "../database/database.js";
+import { deleteById, insertUrls, selectUrlById, updateUrls } from "../repositories/03.urls.repositories.js";
 
 export async function postUrlShorten(req, res) {
     const userId = res.locals.userId;
@@ -9,11 +9,7 @@ export async function postUrlShorten(req, res) {
         const shortUrl = nanoid(10);
         const createdAt = new Date();
 
-        await pgConnection.query(`INSERT INTO 
-        urls (url, "shortUrl", "userId", "createdAt") 
-        VALUES ($1, $2, $3, $4);`,
-            [url, shortUrl, userId, createdAt]
-        );
+        await insertUrls(url, shortUrl, userId, createdAt);
 
         res.status(201).send({ shortUrl: shortUrl });
 
@@ -23,17 +19,6 @@ export async function postUrlShorten(req, res) {
     }
 }
 
-// export async function getShortenUrls(req, res) {
-//     const shortUrl = res.locals.shortUrl;
-
-//     try {
-//         res.status(200).send(shortUrl);
-
-//     } catch (error) {
-//         console.error(error);
-//         res.sendStatus(500);
-//     }
-// }
 
 export async function getShortenUrls(req, res) {
 
@@ -41,9 +26,14 @@ export async function getShortenUrls(req, res) {
 
     try {
 
-        const shortUrl = await pgConnection.query('SELECT id, "shortUrl", url FROM urls WHERE id = $1;', [id]);
+        const shortUrl = await selectUrlById(id);
 
-        res.status(200).send(shortUrl.rows[0]);
+        res.status(200).send(
+            {
+                id: shortUrl.rows[0].id,
+                shortUrl: shortUrl.rows[0].shortUrl,
+                url: shortUrl.rows[0].url
+            });
 
     } catch (error) {
         console.error(error);
@@ -56,7 +46,7 @@ export async function redirectGetUrl(req, res) {
 console.log(res.locals.url, "LOG")
     try {
 
-        await pgConnection.query(`UPDATE urls SET "urlVisits" = "urlVisits" + 1 WHERE id = $1;`,[id]);
+        await updateUrls(id);
 
         res.redirect(url);
 
@@ -71,7 +61,7 @@ export async function deleteUrl(req, res) {
 
     try {
 
-        await pgConnection.query("DELETE FROM urls WHERE id = $1;", [id]);
+        await deleteById(id);
 
         res.sendStatus(204);
 
