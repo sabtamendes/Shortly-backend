@@ -9,7 +9,7 @@ router.post("/urls/shorten", tokenValidation, urlValidation, postUrlShorten);
 
 router.get("/urls/:id", shortenValidation, getShortenUrls);
 
-router.get("/urls/open/:shortUrl", redirectUrlValidation, redirectGetUrl); //visitas
+router.get("/urls/open/:shortUrl", redirectUrlValidation, redirectGetUrl);
 
 router.delete("/urls/:id", tokenValidation, shortenValidation, urlBelongsToUserValidation, deleteUrl);
 

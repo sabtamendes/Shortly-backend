@@ -1,4 +1,4 @@
-import pgConnection from "../database/database.js";
+import { selectSessionByToken } from "../repositories/00.token.repositories.js";
 
 export async function tokenValidation(req, res, next) {
     const { authorization } = req.headers;
@@ -12,7 +12,7 @@ export async function tokenValidation(req, res, next) {
             return res.sendStatus(401);
         }
 
-        const userSession = await pgConnection.query("SELECT * FROM sessions WHERE token = $1", [token]);
+        const userSession = await selectSessionByToken(token);
 
         if (userSession.rowCount === 0) {
             console.log("token inválido!");
