@@ -4,7 +4,7 @@ import { deleteById, insertUrls, selectUrlById, updateUrls } from "../repositori
 export async function postUrlShorten(req, res) {
     const userId = res.locals.userId;
     const url = res.locals.url;
-    console.log(url, "URL")
+
     try {
         const shortUrl = nanoid(10);
         const createdAt = new Date();
@@ -18,7 +18,6 @@ export async function postUrlShorten(req, res) {
         res.sendStatus(500);
     }
 }
-
 
 export async function getShortenUrls(req, res) {
 
@@ -43,7 +42,7 @@ export async function getShortenUrls(req, res) {
 
 export async function redirectGetUrl(req, res) {
     const { url, id } = res.locals.url;
-console.log(res.locals.url, "LOG")
+
     try {
 
         await updateUrls(id);

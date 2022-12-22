@@ -1,6 +1,6 @@
-import { signInSchema } from "../schemas/02.signin.schemas.js";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
+import { signInSchema } from "../schemas/02.signin.schemas.js";
 import { selectByEmail } from "../repositories/02.signin.repositories.js";
 
 export async function signinValidation(req, res, next) {
@@ -27,7 +27,6 @@ export async function signinValidation(req, res, next) {
         if (!passwordValid) {
             return res.sendStatus(401);
         }
-
 
         res.locals.token = token;
         res.locals.id = userAccount.rows[0].id;
