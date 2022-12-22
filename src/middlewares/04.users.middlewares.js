@@ -4,7 +4,7 @@ export async function usersValidation(req, res, next) {
     const userId = res.locals.userId;
 
     try {
-        //receber userId de outro middleware e entrar no banco
+
         const userExist = await pgConnection.query(`SELECT * FROM users WHERE id = $1;`, [userId]);
 
         if (userExist.rowCount === 0) {

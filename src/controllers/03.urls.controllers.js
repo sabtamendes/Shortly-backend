@@ -4,7 +4,7 @@ import pgConnection from "../database/database.js";
 export async function postUrlShorten(req, res) {
     const userId = res.locals.userId;
     const url = res.locals.url;
-
+    console.log(url, "URL")
     try {
         const shortUrl = nanoid(10);
         const createdAt = new Date();
@@ -23,8 +23,20 @@ export async function postUrlShorten(req, res) {
     }
 }
 
+// export async function getShortenUrls(req, res) {
+//     const shortUrl = res.locals.shortUrl;
+
+//     try {
+//         res.status(200).send(shortUrl);
+
+//     } catch (error) {
+//         console.error(error);
+//         res.sendStatus(500);
+//     }
+// }
+
 export async function getShortenUrls(req, res) {
-    //teste
+
     const { id } = res.locals.shortUrl;
 
     try {
@@ -40,12 +52,11 @@ export async function getShortenUrls(req, res) {
 }
 
 export async function redirectGetUrl(req, res) {
-    const url = res.locals.url;
-    const urlId = res.locals.id;
-    const userId = res.locals.userId;
+    const { url, id } = res.locals.url;
+console.log(res.locals.url, "LOG")
     try {
-       
-        await pgConnection.query(`INSERT INTO visits ("urlId", visit, "userId") VALUES ($1, $2, $3);`, [urlId, 1, userId]);
+
+        await pgConnection.query(`UPDATE urls SET "urlVisits" = "urlVisits" + 1 WHERE id = $1;`,[id]);
 
         res.redirect(url);
 
@@ -59,7 +70,7 @@ export async function deleteUrl(req, res) {
     const { id } = res.locals.shortUrl;
 
     try {
-        await pgConnection.query('DELETE FROM visits WHERE "urlId" = $1;', [id]);
+
         await pgConnection.query("DELETE FROM urls WHERE id = $1;", [id]);
 
         res.sendStatus(204);
