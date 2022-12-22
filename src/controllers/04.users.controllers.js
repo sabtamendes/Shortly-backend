@@ -1,22 +1,17 @@
-import pgConnection from "../database/database.js";
+import { countAllUrlVisits, countEachUrlVisits, selectUsersByUserId } from "../repositories/04.users.repositories.js";
 
 export async function getUser(req, res) {
     const user = res.locals.user;
     console.log(user, "DADOS DO USUÁRIO ATRELADO AO TOKEN")
     try {
 
-        const users = await pgConnection.query(`SELECT * FROM users WHERE id = $1;`, [user.id]);
+        const users = await selectUsersByUserId(user.id);
 
         
-        const count = await pgConnection.query(`SELECT SUM(urls."urlVisits")::INTEGER FROM urls WHERE urls."userId" = $1;`, [user.id]);
+        const count = await countAllUrlVisits(user.id);
 
        
-        const urls = await pgConnection.query(`SELECT
-            urls.id, urls."shortUrl", urls.url, 
-            SUM(urls."urlVisits")::INTEGER AS "visitCount"
-            FROM urls
-            WHERE urls."userId" = $1
-            GROUP BY urls.id;`, [user.id]);
+        const urls = await countEachUrlVisits(user.id);
 
             
 
