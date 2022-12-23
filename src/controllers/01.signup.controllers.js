@@ -6,6 +6,8 @@ export async function postSignup(req, res) {
 
     const passwordHash = bcrypt.hashSync(password, 10);
 
+    delete res.locals.user.confirmPassword;
+
     try {
         await insertUsers(name, email, passwordHash);
 
