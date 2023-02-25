@@ -106,6 +106,49 @@ npm run dev
 
 </details>
 
+
+
+<details>
+<summary><strong>PostgreSQL-Tables</strong></summary>
+
+## Este projeto utiliza PostgreSQL como banco de dados, com as seguintes tabelas:
+
+`users`: armazena informações dos usuários cadastrados no sistema
+
+```sql
+CREATE TABLE users(
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    password TEXT NOT NULL
+);
+``` 
+
+   `sessions`: armazena informações das sessões dos usuários autenticados
+
+```sql
+CREATE TABLE sessions(
+    id SERIAL PRIMARY KEY,
+    token TEXT NOT NULL,
+    "userId" INTEGER REFERENCES "users"("id")
+);
+``` 
+  `urls`: armazena informações dos links encurtados
+  
+  ```sql
+  CREATE TABLE urls(
+    id SERIAL PRIMARY KEY,
+    url TEXT NOT NULL,
+    "shortUrl" TEXT NOT NULL,
+    "urlVisits" INTEGER NOT NULL DEFAULT 0,
+    "userId" INTEGER REFERENCES "users"("id"),
+    "createdAt" DATE NOT NULL
+);
+```
+
+</details>
+
+
 <details>
  <summary><strong>API</strong></summary>
 
