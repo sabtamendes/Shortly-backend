@@ -107,7 +107,7 @@ npm run dev
 </details>
 
 <details>
-  <summary>API</summary>
+ <summary><strong>API</strong></summary>
 
    ## 🌐 Utilização da API
    
@@ -356,15 +356,14 @@ npm run dev
    HTTP/1.1 404 NOT FOUND
    ```
    
-   </details>
+   </details>    
     
-    
-    
-      
-  <details>
-   <summary>users/me</summary>
+ </details>
+ 
+ <details>
+  <summary><strong>users/me</strong></summary>
      
-  `GET users/me`: redirecionar à url.
+  `GET users/me`: urls encurtadas do usuário, visitas.
    
    ### Requisição
    
@@ -418,8 +417,53 @@ npm run dev
    
    </details>
     
-    
-    
- </details>
+ 
+   
+  <details>
+   <summary><strong>ranking</strong></summary>
+     
+  `GET /ranking`: mostra as urls mais visitadas.
+      
+   ### Resposta
+   
+   Sucesso
+   
+   ```jsx
+   HTTP/1.1 200 OK
+   ```
+   - LIMITE de 10 usuários, ORDENADA pela SOMA de visitas dos links;
+   ```jsx 
+
+ [
+	{
+		"id": id do usuário,
+		"name": nome do usuário,
+		"linksCount": 5,
+		"visitCount": 100000
+	},
+	{
+		"id": id do usuário,
+		"name": nome do usuário,
+		"linksCount": 3,
+		"visitCount": 85453
+	},
+	{
+		"id": id do usuário,
+		"name": nome do usuário,
+		"linksCount": 10,
+		"visitCount": 0
+	},
+	{
+		"id": id do usuário,
+		"name": nome do usuário,
+		"linksCount": 0,
+		"visitCount": 0
+	}
+]
+ 
+   ```
+      
+   </details>
+ 
    
 </details>
